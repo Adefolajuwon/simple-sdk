@@ -1,6 +1,6 @@
 const fetch = require('isomorphic-unfetch');
 const querystring = require('querystring');
-/**simple sdk for  */
+/**simple sdk for devto api */
 class DevTo {
 	constructor(config) {
 		this.api_key = config.api_key;

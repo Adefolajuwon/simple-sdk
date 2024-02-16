@@ -1,43 +1,45 @@
 const fetch = require('isomorphic-unfetch');
 const querystring = require('querystring');
-/**simple sdk for devto api */
+
 class DevTo {
 	constructor(config) {
 		this.api_key = config.api_key;
 		this.basePath = 'https://dev.to/api';
-	}
-
-	request(endpoint = '', options = {}) {
-		let url = this.basePath + endpoint;
-
-		let headers = {
+		this.headers = {
 			api_key: this.api_key,
 			'Content-type': 'application/json',
 		};
+	}
 
-		let config = {
+	async request(endpoint = '', options = {}) {
+		const url = this.basePath + endpoint;
+		const config = {
 			...options,
-			...headers,
+			headers: {
+				...this.headers,
+				...options.headers,
+			},
 		};
 
-		return fetch(url, config).then((r) => {
-			if (r.ok) {
-				return r.json();
-			}
-			throw new Error(r);
-		});
-	}
-	getArticleById(id) {
-		let url = '/articles/' + id;
-		return this.request(url, {});
-	}
-	getArticles(options) {
-		let qs = options ? '?' + querystring.stringify(options) : '';
+		const response = await fetch(url, config);
+		if (!response.ok) {
+			throw new Error('Request failed: ' + response.statusText);
+		}
 
-		let url = '/articles' + qs;
-		let config = {
+		return await response.json();
+	}
+
+	async getArticleById(id) {
+		const url = '/articles/' + id;
+		return await this.request(url);
+	}
+
+	async getArticles(options) {
+		const qs = options ? '?' + querystring.stringify(options) : '';
+		const url = '/articles' + qs;
+		const config = {
 			method: 'GET',
 		};
-		return this.request(url, config);
+		return await this.request(url, config);
 	}
 }

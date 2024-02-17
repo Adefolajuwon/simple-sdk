@@ -23,7 +23,7 @@ class DevTo {
 
 		const response = await fetch(url, config);
 		if (!response.ok) {
-			throw new Error('Request failed: ' + response.statusText);
+			throw new Error('Request filed: ' + response.statusText);
 		}
 
 		return await response.json();
